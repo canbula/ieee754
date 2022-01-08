@@ -8,7 +8,7 @@ setup(
   author = 'Bora Canbula',
   author_email = 'bora.canbula@cbu.edu.tr',
   url = 'https://github.com/canbula/ieee754',
-  download_url = 'https://github.com/canbula/ieee754/archive/v_01.tar.gz',
+  download_url = 'https://github.com/canbula/ieee754/archive/refs/tags/v_01.tar.gz',
   keywords = ['IEEE-754', 'binary', 'floating-points', 'binary-representation'],
   install_requires=[
           'numpy',
