@@ -2,7 +2,7 @@ from distutils.core import setup
 setup(
   name = 'ieee754',
   packages = ['ieee754'],
-  version = '0.1',
+  version = '0.2',
   license='MIT',
   description = 'A Python library which converts floating points numbers into IEEE-754 representation.',
   author = 'Bora Canbula',
@@ -19,12 +19,5 @@ setup(
     'Topic :: Scientific/Engineering :: Mathematics',
     'License :: OSI Approved :: MIT License',
     'Programming Language :: Python :: 3',
-    'Programming Language :: Python :: 3.4',
-    'Programming Language :: Python :: 3.5',
-    'Programming Language :: Python :: 3.6',
-    'Programming Language :: Python :: 3.7',
-    'Programming Language :: Python :: 3.8',
-    'Programming Language :: Python :: 3.9',
-    'Programming Language :: Python :: 3.10',
   ],
 )
