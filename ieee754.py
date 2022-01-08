@@ -76,6 +76,22 @@ class IEEE754:
 
 
 if __name__ == "__main__":
+    # with default options (Double Precision)
+    x = 13.375
+    a = IEEE754(x)
+    # you should call the instance as a string
+    print(str(a))
+    print(f"{a}")
+    # you can get the hexadecimal presentation like this
+    print(a.str2hex())
+    # or you can specify a precision and
     for p in range(5):
-        a = IEEE754(13.375, p)
+        a = IEEE754(x, p)
         print("x = %f | b = %s | h = %s" % (13.375, a, a.str2hex()))
+    # or you can use your own custom precision
+    a = IEEE754(x, 
+    force_length=19, 
+    force_exponent=6, 
+    force_mantissa=12, 
+    force_bias=31)
+    print(f"{a}")
