@@ -1,6 +1,6 @@
 # ieee754
 
-ieee754 is small Python library which gives you the IEEE-754 representation of a floating point number. You can specify a precision given in the list below or you can even use your own custom precision.
+ieee754 is a Python module which finds the IEEE-754 representation of a floating point number. You can specify a precision given in the list below or you can even use your own custom precision.
 <ul>
 <li>Half Precision (16 bit: 1 bit for sign + 5 bits for exponent + 10 bits for mantissa)</li>
 <li>Single Precision (32 bit: 1 bit for sign + 8 bits for exponent + 23 bits for mantissa)</li>
