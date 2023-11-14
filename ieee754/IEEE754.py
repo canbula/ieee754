@@ -2,6 +2,31 @@ from decimal import Decimal, getcontext
 
 
 class IEEE754:
+    """
+    IEEE 754 Floating Point Representation
+    https://en.wikipedia.org/wiki/IEEE_754
+
+    Author: Bora Canbula
+    Email: bora.canbula@cbu.edu.tr
+    Link: https://github.com/canbula/ieee754
+
+    Parameters
+    ----------
+    number : str
+        Floating point number to be converted.
+    precision : int, optional
+        Precision of the number, by default 2
+    force_exponent : int, optional
+        Force the exponent bits, by default None
+    force_mantissa : int, optional
+        Force the mantissa bits, by default None
+
+    Returns
+    -------
+    IEEE754
+        IEEE 754 representation of the number
+    """
+
     def __init__(
         self,
         number: str = "0.0",
@@ -166,26 +191,173 @@ class IEEE754:
 
 
 def half(x: str) -> IEEE754:
+    """
+    IEEE 754 Half Precision Representation
+
+    Parameters
+    ----------
+    x : str
+        Floating point number to be converted.
+
+    Returns
+    -------
+    IEEE754
+        IEEE 754 representation of the number
+
+    Examples
+    --------
+    >>> half(13.375)
+    0 10010 1010110000
+
+    >>> half(13.375).hex()
+    4AB0
+
+    >>> half(13.375).json()
+    {'exponent-bits': 5, 'mantissa-bits': 10, 'bias': 15, 'sign': '0', 'exponent': '10010', 'mantissa': '1010110000', 'binary': '1101011', 'binary_output': '1101.011', 'hex': '4AB0', 'up scaled number': 107, 'scale': 3, 'number': 13.375}
+
+    Project
+    -------
+    https://github.com/canbula/ieee754
+    """
     return IEEE754(x, 0)
 
 
 def single(x: str) -> IEEE754:
+    """
+    IEEE 754 Single Precision Representation
+
+    Parameters
+    ----------
+    x : str
+        Floating point number to be converted.
+
+    Returns
+    -------
+    IEEE754
+        IEEE 754 representation of the number
+
+    Examples
+    --------
+    >>> single(13.375)
+    0 10000010 10101100000000000000000
+
+    >>> single(13.375).hex()
+    41560000
+
+    >>> single(13.375).json()
+    {'exponent-bits': 8, 'mantissa-bits': 23, 'bias': 127, 'sign': '0', 'exponent': '10000010', 'mantissa': '10101100000000000000000', 'binary': '1101011', 'binary_output': '1101.011', 'hex': '41560000', 'up scaled number': 107, 'scale': 3, 'number': 13.375}
+
+    Project
+    -------
+    https://github.com/canbula/ieee754
+    """
     return IEEE754(x, 1)
 
 
 def double(x: str) -> IEEE754:
+    """
+    IEEE 754 Double Precision Representation
+
+    Parameters
+    ----------
+    x : str
+        Floating point number to be converted.
+
+    Returns
+    -------
+    IEEE754
+        IEEE 754 representation of the number
+
+    Examples
+    --------
+    >>> double(13.375)
+    0 10000000010 1010110000000000000000000000000000000000000000000000
+
+    >>> double(13.375).hex()
+    402AC00000000000
+
+    >>> double(13.375).json()
+    {'exponent-bits': 11, 'mantissa-bits': 52, 'bias': 1023, 'sign': '0', 'exponent': '10000000010', 'mantissa': '1010110000000000000000000000000000000000000000000000', 'binary': '1101011', 'binary_output': '1101.011', 'hex': '402AC00000000000', 'up scaled number': 107, 'scale': 3, 'number': 13.375}
+
+    Project
+    -------
+    https://github.com/canbula/ieee754
+    """
     return IEEE754(x, 2)
 
 
 def quadruple(x: str) -> IEEE754:
+    """
+    IEEE 754 Quadruple Precision Representation
+
+    Parameters
+    ----------
+    x : str
+        Floating point number to be converted.
+
+    Returns
+    -------
+    IEEE754
+        IEEE 754 representation of the number
+
+    Examples
+    --------
+    >>> quadruple(13.375)
+    0 100000000000010 1010110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+
+    >>> quadruple(13.375).hex()
+    4002AC00000000000000000000000000
+
+    >>> quadruple(13.375).json()
+    {'exponent-bits': 15, 'mantissa-bits': 112, 'bias': 16383, 'sign': '0', 'exponent': '100000000000010', 'mantissa': '1010110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000', 'binary': '1101011', 'binary_output': '1101.011', 'hex': '4002AC00000000000000000000000000', 'up scaled number': 107, 'scale': 3, 'number': 13.375}
+
+    Project
+    -------
+    https://github.com/canbula/ieee754
+    """
     return IEEE754(x, 3)
 
 
 def octuple(x: str) -> IEEE754:
+    """
+    IEEE 754 Octuple Precision Representation
+
+    Parameters
+    ----------
+    x : str
+        Floating point number to be converted.
+
+    Returns
+    -------
+    IEEE754
+        IEEE 754 representation of the number
+
+    Examples
+    --------
+    >>> octuple(13.375)
+    0 1000000000000000010 10101100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+
+    >>> octuple(13.375).hex()
+    40002AC000000000000000000000000000000000000000000000000000000000
+
+    >>> octuple(13.375).json()
+    {'exponent-bits': 19, 'mantissa-bits': 236, 'bias': 262143, 'sign': '0', 'exponent': '1000000000000000010', 'mantissa': '10101100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000', 'binary': '1101011', 'binary_output': '1101.011', 'hex': '40002AC000000000000000000000000000000000000000000000000000000000', 'up scaled number': 107, 'scale': 3, 'number': 13.375}
+
+    Project
+    -------
+    https://github.com/canbula/ieee754
+    """
     return IEEE754(x, 4)
 
 
 if __name__ == "__main__":
+    # you can call the precision functions by using their names
+    x = 13.375
+    print(half(x))
+    print(single(x))
+    print(double(x))
+    print(quadruple(x))
+    print(octuple(x))
     # with default options (Double Precision)
     x = 13.375
     a = IEEE754(x)
@@ -199,16 +371,9 @@ if __name__ == "__main__":
     for p in range(5):
         a = IEEE754(x, p)
         print("x = %f | b = %s | h = %s" % (13.375, a, a.hex()))
+        print(a.json())
     # or you can use your own custom precision
     a = IEEE754(x, force_exponent=6, force_mantissa=12)
     print(f"{a}")
     # you can get more details with json
     print(a.json())
-
-    # you can also call the precision functions
-    x = 13.375
-    print(half(x))
-    print(single(x))
-    print(double(x))
-    print(quadruple(x))
-    print(octuple(x))
