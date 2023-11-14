@@ -5,15 +5,12 @@ ieee754 is a Python module which finds the IEEE-754 representation of a floating
 <li>Half Precision (16 bit: 1 bit for sign + 5 bits for exponent + 10 bits for mantissa)</li>
 <li>Single Precision (32 bit: 1 bit for sign + 8 bits for exponent + 23 bits for mantissa)</li>
 <li>Double Precision (64 bit: 1 bit for sign + 11 bits for exponent + 52 bits for mantissa)</li>
-<li>Quadrupole Precision (128 bit: 1 bit for sign + 15 bits for exponent + 112 bits for mantissa)</li>
+<li>Quadruple Precision (128 bit: 1 bit for sign + 15 bits for exponent + 112 bits for mantissa)</li>
 <li>Octuple Precision (256 bit: 1 bit for sign + 19 bits for exponent + 236 bits for mantissa)</li>
 
 ## Prerequisites
 
-ieee754 uses numpy, so you should install numpy first.
-```sh
-$ pip install numpy
-```
+ieee754 does not require any external libraries or modules.
 
 ## Installing
 
@@ -33,10 +30,13 @@ from ieee754 import IEEE754
 x = 13.375
 a = IEEE754(x)
 # you should call the instance as a string
+print(a)
 print(str(a))
 print(f"{a}")
 # you can get the hexadecimal presentation like this
-print(a.str2hex())
+print(a.hex())
+# you can get more detailed information like this
+print(a.json())
 ```
 
 ### Select a Precision
@@ -46,14 +46,27 @@ from ieee754 import IEEE754
 
 for p in range(5):
     a = IEEE754(x, p)
-    print("x = %f | b = %s | h = %s" % (13.375, a, a.str2hex()))
+    print("x = %f | b = %s | h = %s" % (13.375, a, a.hex()))
+```
+
+### Use the Precision Name as an Interface
+You can use the precision name as an interface to get the IEEE-754 representation of a floating point number. With this method you can get the IEEE-754 representation of a floating point number without creating an instance.
+```Python
+from ieee754 import half, single, double, quadruple, octuple
+
+x = 13.375
+print(half(x))
+print(single(x))
+print(double(x))
+print(quadruple(x))
+print(octuple(x))
 ```
 
 ### Using a Custom Precision
-You can force total length, exponent, and mantissa size, and also the bias.
+You can force exponent, and mantissa size by using force_exponent and force_mantissa parameters to create your own custom precision.
 ```Python
-a = IEEE754(x, force_length=19, force_exponent=6, force_mantissa=12, force_bias=31)
-print(f"{a}")
+a = IEEE754(x, force_exponent=6, force_mantissa=12)
+print(a)
 ```
 
 
