@@ -51,6 +51,7 @@ class IEEE754:
         self.__bias: int = 2 ** (self.__exponent - 1) - 1
         self.__edge_case: str = None
         self.number: Decimal = self.validate_number(number)
+        self.original_number: Decimal = self.number
         if self.__edge_case is None:
             self.sign: str = self.find_sign()
             self.__scale, self.number = self.scale_up_to_integer(self.number, 2)
@@ -60,6 +61,7 @@ class IEEE754:
             )
             self.exponent = self.find_exponent()
             self.mantissa = self.find_mantissa()
+            self.converted_number, self.error = self.back_to_decimal_from_bits()
 
     def validate_number(self, number: str) -> Decimal:
         if number == "":
@@ -160,6 +162,9 @@ class IEEE754:
     def hex(self) -> str:
         h = ""
         s = str(self).replace(" ", "")
+        if len(s) % 4 != 0:
+            next_multiple = (len(s) // 4 + 1) * 4
+            s = "0" * (next_multiple - len(s)) + s
         limit = len(s) - (len(s) % 4)
         for i in range(0, limit, 4):
             ss = s[i : i + 4]
@@ -184,10 +189,21 @@ class IEEE754:
             "up scaled number": self.number,
             "scale": self.__scale,
             "number": self.number / (2**self.__scale),
+            "converted_number": self.converted_number,
+            "error": self.error,
         }
 
     def __repr__(self) -> str:
         return self.__str__()
+
+    def back_to_decimal_from_bits(self) -> (Decimal, Decimal):
+        sign, exponent, mantissa = self.__str__().split(" ")
+        sign = (-1) ** int(sign)
+        exponent = int(exponent, 2) - self.__bias
+        mantissa = int(mantissa, 2)
+        number = Decimal(sign * (1 + mantissa * 2**-self.__mantissa) * 2**exponent)
+        error = Decimal(self.original_number - number).copy_abs()
+        return number, error
 
 
 def half(x: str) -> IEEE754:
@@ -377,3 +393,7 @@ if __name__ == "__main__":
     print(f"{a}")
     # you can get more details with json
     print(a.json())
+    # you can get the converted number and the error
+    x = 8.7
+    a = IEEE754(x, 1)
+    print(f"{x} is converted as {a.converted_number} ± {a.error}")

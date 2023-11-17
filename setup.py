@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 setup(
     name="ieee754",
     packages=["ieee754"],
-    version="0.6",
+    version="0.7",
     license="MIT",
     description="A Python module which converts floating points numbers into IEEE-754 representation.",
     long_description=long_description,
@@ -14,7 +14,7 @@ setup(
     author="Bora Canbula",
     author_email="bora.canbula@cbu.edu.tr",
     url="https://github.com/canbula/ieee754",
-    download_url="https://github.com/canbula/ieee754/archive/refs/tags/v_06.tar.gz",
+    download_url="https://github.com/canbula/ieee754/archive/refs/tags/v_07.tar.gz",
     keywords=[
         "IEEE-754",
         "precisions",
