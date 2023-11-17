@@ -26,7 +26,7 @@ After installation, you can import ieee754 and use it in your projects.
 
 ### Simplest Example
 
-The simplest example is to use the desired precision IEEE-754 representation of a floating point number. You can import the desired precision from ieee754 and use it like this. The available precisions are half, single, double, quadruple and octuple.
+The simplest example is to use the desired precision IEEE-754 representation of a floating point number. You can import the desired precision from ieee754 and use it like this. The available precisions are `half`, `single`, `double`, `quadruple` and `octuple`.
 ```Python
 from ieee754 import double
 
@@ -78,10 +78,19 @@ print(octuple(x))
 
 ### Using a Custom Precision
 
-You can force exponent, and mantissa size by using force_exponent and force_mantissa parameters to create your own custom precision.
+You can force exponent, and mantissa size by using `force_exponent` and `force_mantissa` parameters to create your own custom precision.
 ```Python
 a = IEEE754(x, force_exponent=6, force_mantissa=12)
 print(a)
+```
+
+### Finding the Error of a Floating Point Number
+
+You can find the error of a floating point number by using the `converted_number` and `error` properties of the class.
+```Python
+x = 8.7
+a = IEEE754(x, 1)
+print(f"{x} is converted as {a.converted_number} ± {a.error}")
 ```
 
 
