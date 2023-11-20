@@ -48,6 +48,27 @@ class IEEE754:
             if force_mantissa is not None
             else mantissa_list[self.precision]
         )
+        self.output: dict = {
+            "number": "",
+            "edge_case": False,
+            "sign_bit": "",
+            "exponent_bits": "",
+            "mantissa_bits": "",
+            "total_bits": "",
+            "sign": "",
+            "scale": "",
+            "scaled_number": "",
+            "scaled_number_in_binary": "",
+            "unable_to_scale": False,
+            "bias": "",
+            "exponent": "",
+            "mantissa": "",
+            "result": "",
+            "hexadecimal": "",
+            "hexadecimal_parts": [],
+            "converted_number": "",
+            "error": "",
+        }
         self.__bias: int = 2 ** (self.__exponent - 1) - 1
         self.__edge_case: str = None
         self.number: Decimal = self.validate_number(number)
@@ -69,34 +90,51 @@ class IEEE754:
         if Decimal(number).is_infinite():
             if Decimal(number) > 0:
                 # +inf: 0 11111111 00000000000000000000000
-                self.__edge_case = f"0 {'1' * self.__exponent} {'0' * self.__mantissa}"
+                self.sign = "0"
+                self.exponent = f"{'1' * self.__exponent}"
+                self.mantissa = f"{'0' * self.__mantissa}"
+                self.__edge_case = f"{self.sign} {self.exponent} {self.mantissa}"
                 return Decimal("Infinity")
             # -inf: 1 11111111 00000000000000000000000
-            self.__edge_case = f"1 {'1' * self.__exponent} {'0' * self.__mantissa}"
+            self.sign = "1"
+            self.exponent = f"{'1' * self.__exponent}"
+            self.mantissa = f"{'0' * self.__mantissa}"
+            self.__edge_case = f"{self.sign} {self.exponent} {self.mantissa}"
             return Decimal("-Infinity")
         if Decimal(number).is_nan() and Decimal(number).is_snan():
             # snan: 0 11111111 00000000000000000000001
-            self.__edge_case = (
-                f"0 {'1' * self.__exponent} {'0' * (self.__mantissa - 1)}1"
-            )
+            self.sign = "0"
+            self.exponent = f"{'1' * self.__exponent}"
+            self.mantissa = f"{'0' * (self.__mantissa - 1)}1"
+            self.__edge_case = f"{self.sign} {self.exponent} {self.mantissa}"
             return Decimal("NaN")
         if Decimal(number).is_nan() and Decimal(number).is_qnan():
             # qnan: 0 11111111 10000000000000000000000
-            self.__edge_case = (
-                f"0 {'1' * self.__exponent} 1{'0' * (self.__mantissa - 1)}"
-            )
+            self.sign = "0"
+            self.exponent = f"{'1' * self.__exponent}"
+            self.mantissa = f"1{'0' * (self.__mantissa - 1)}"
+            self.__edge_case = f"{self.sign} {self.exponent} {self.mantissa}"
             return Decimal("NaN")
         if not number == number:
             # nan: 0 11111111 11111111111111111111111
-            self.__edge_case = f"0 {'1' * self.__exponent} {'1' * self.__mantissa}"
+            self.sign = "0"
+            self.exponent = f"{'1' * self.__exponent}"
+            self.mantissa = f"{'1' * self.__mantissa}"
+            self.__edge_case = f"{self.sign} {self.exponent} {self.mantissa}"
             return Decimal("NaN")
         if Decimal(number) == 0:
             if Decimal(number).is_signed():
                 # -0: 1 00000000 00000000000000000000000
-                self.__edge_case = f"1 {'0' * self.__exponent} {'0' * self.__mantissa}"
+                self.sign = "1"
+                self.exponent = f"{'0' * self.__exponent}"
+                self.mantissa = f"{'0' * self.__mantissa}"
+                self.__edge_case = f"{self.sign} {self.exponent} {self.mantissa}"
             else:
                 # +0: 0 00000000 00000000000000000000000
-                self.__edge_case = f"0 {'0' * self.__exponent} {'0' * self.__mantissa}"
+                self.sign = "0"
+                self.exponent = f"{'0' * self.__exponent}"
+                self.mantissa = f"{'0' * self.__mantissa}"
+                self.__edge_case = f"{self.sign} {self.exponent} {self.mantissa}"
             return Decimal("0")
         if isinstance(number, int):
             number = f"{number}.0"
@@ -143,14 +181,11 @@ class IEEE754:
 
     def find_exponent(self) -> str:
         exponent = len(self.binary) - 1 + self.__bias - self.__scale
-        # fill with leading zeros if necessary
         return f"{exponent:0{self.__exponent}b}"
 
     def find_mantissa(self) -> str:
-        # fill with trailing zeros if necessary
         mantissa = f"{self.binary[1:]:<0{self.__mantissa}}"
         if len(mantissa) > self.__mantissa:
-            # round up if mantissa is too long
             mantissa = f"{mantissa[: self.__mantissa - 1]}1"
         return mantissa
 
@@ -159,8 +194,9 @@ class IEEE754:
             return self.__edge_case
         return f"{self.sign} {self.exponent} {self.mantissa}"
 
-    def hex(self) -> str:
+    def hex(self) -> (str, list[str]):
         h = ""
+        hex_parts = []
         s = str(self).replace(" ", "")
         if len(s) % 4 != 0:
             next_multiple = (len(s) // 4 + 1) * 4
@@ -171,32 +207,48 @@ class IEEE754:
             si = 0
             for j in range(4):
                 si += int(ss[j]) * (2 ** (3 - j))
+            hex_parts.append(ss)
             sh = hex(si)
             h += sh[2]
-        return h.upper()
+        return h.upper(), hex_parts
 
     def json(self) -> dict:
-        return {
-            "exponent-bits": self.__exponent,
-            "mantissa-bits": self.__mantissa,
-            "bias": self.__bias,
-            "sign": self.sign,
-            "exponent": self.exponent,
-            "mantissa": self.mantissa,
-            "binary": self.binary,
-            "binary_output": self.binary_output,
-            "hex": self.hex(),
-            "up scaled number": self.number,
-            "scale": self.__scale,
-            "number": self.number / (2**self.__scale),
-            "converted_number": self.converted_number,
-            "error": self.error,
-        }
+        return self.produce_output()
 
     def __repr__(self) -> str:
         return self.__str__()
 
+    def produce_output(self) -> dict:
+        self.output["number"] = self.original_number
+        self.output["sign_bit"] = "1"
+        self.output["exponent_bits"] = self.__exponent
+        self.output["mantissa_bits"] = self.__mantissa
+        self.output["total_bits"] = 1 + self.__exponent + self.__mantissa
+        self.output["sign"] = self.sign
+        self.output["exponent"] = self.exponent
+        self.output["mantissa"] = self.mantissa
+        self.output["bias"] = self.__bias
+        self.output["hexadecimal"], self.output["hexadecimal_parts"] = self.hex()
+        self.output["result"] = self.__str__()
+        if self.__edge_case is None:
+            self.output["scale"] = self.__scale
+            self.output["scaled_number"] = self.number
+            self.output["scaled_number_in_binary"] = self.binary
+            (
+                self.output["converted_number"],
+                self.output["error"],
+            ) = self.back_to_decimal_from_bits()
+        else:
+            self.output["edge_case"] = True
+        return self.output
+
     def back_to_decimal_from_bits(self) -> (Decimal, Decimal):
+        """
+        Returns
+        -------
+        Decimal
+            Decimal representation of the number
+        """
         sign, exponent, mantissa = self.__str__().split(" ")
         sign = (-1) ** int(sign)
         exponent = int(exponent, 2) - self.__bias
@@ -397,3 +449,5 @@ if __name__ == "__main__":
     x = 8.7
     a = IEEE754(x, 1)
     print(f"{x} is converted as {a.converted_number} ± {a.error}")
+    # you can get the full output as a dictionary with produce_output()
+    print(a.produce_output())
