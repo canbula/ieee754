@@ -75,6 +75,7 @@ class IEEE754:
         self.original_number: Decimal = self.number
         if self.__edge_case is None:
             self.sign: str = self.find_sign()
+            self.number = self.number.copy_abs()
             self.__scale, self.number = self.scale_up_to_integer(self.number, 2)
             self.binary: str = f"{self.number:b}"
             self.binary_output: str = (
@@ -171,12 +172,12 @@ class IEEE754:
             return "1"
         return "0"
 
-    @staticmethod
-    def scale_up_to_integer(number: Decimal, base: int) -> (int, int):
+    def scale_up_to_integer(self, number: Decimal, base: int) -> (int, int):
         scale = 0
         while number != int(number):
             number *= base
             scale += 1
+        self.output["unable_to_scale"] = scale > 100
         return scale, int(number)
 
     def find_exponent(self) -> str:
@@ -449,5 +450,13 @@ if __name__ == "__main__":
     x = 8.7
     a = IEEE754(x, 1)
     print(f"{x} is converted as {a.converted_number} ± {a.error}")
-    # you can get the full output as a dictionary with produce_output()
-    print(a.produce_output())
+    x = -0.75
+    a = IEEE754(x, 1)
+    print(f"{x} is converted as {a.converted_number} ± {a.error}")
+    # test edge cases
+    print(IEEE754(0))
+    print(IEEE754("-0"))
+    print(IEEE754("Infinity"))
+    print(IEEE754("-Infinity"))
+    print(IEEE754("NaN"))
+    print(IEEE754("-NaN"))
