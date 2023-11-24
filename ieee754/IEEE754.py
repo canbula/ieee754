@@ -61,8 +61,10 @@ class IEEE754:
             "scaled_number_in_binary": "",
             "unable_to_scale": False,
             "bias": "",
+            "bias_in_binary": "",
             "exponent": "",
             "mantissa": "",
+            "mantissa_base_10": "",
             "result": "",
             "hexadecimal": "",
             "hexadecimal_parts": [],
@@ -229,6 +231,7 @@ class IEEE754:
         self.output["exponent"] = self.exponent
         self.output["mantissa"] = self.mantissa
         self.output["bias"] = self.__bias
+        self.output["bias_in_binary"] = f"{self.__bias:0{self.__exponent}b}"
         self.output["hexadecimal"], self.output["hexadecimal_parts"] = self.hex()
         self.output["result"] = self.__str__()
         if self.__edge_case is None:
@@ -251,6 +254,10 @@ class IEEE754:
             Decimal representation of the number
         """
         sign, exponent, mantissa = self.__str__().split(" ")
+        mantissa_base_10 = Decimal(0)
+        for i in range(len(mantissa)):
+            mantissa_base_10 += Decimal(int(mantissa[i]) * Decimal(2) ** -(i + 1))
+        self.output["mantissa_base_10"] = mantissa_base_10
         sign = (-1) ** int(sign)
         exponent = int(exponent, 2) - self.__bias
         mantissa = int(mantissa, 2)
@@ -460,3 +467,4 @@ if __name__ == "__main__":
     print(IEEE754("-Infinity"))
     print(IEEE754("NaN"))
     print(IEEE754("-NaN"))
+    print(half(-0.17))
