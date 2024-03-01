@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 setup(
     name="ieee754",
     packages=["ieee754"],
-    version="0.10",
+    version="0.11",
     license="MIT",
     description="A Python module which converts floating points numbers into IEEE-754 representation.",
     long_description=long_description,
