@@ -197,7 +197,7 @@ class IEEE754:
             return self.__edge_case
         return f"{self.sign} {self.exponent} {self.mantissa}"
 
-    def hex(self) -> (str, list[str]):
+    def hex(self) -> tuple:
         h = ""
         hex_parts = []
         s = str(self).replace(" ", "")
